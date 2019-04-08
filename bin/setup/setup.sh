@@ -13,7 +13,7 @@ function cinfo() {
 cinfo "Compiling extensions..."
 CURRENT_PATH=`pwd`
 
-for i in `find ../../ -name "compile.sh"`;do
+for i in `find ../../ -name "compile.sh" | grep cython`;do
 	dest=`dirname ${i}`;
 	cinfo $dest;
 	cd $dest;

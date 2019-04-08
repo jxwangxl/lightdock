@@ -74,48 +74,49 @@ def parse_complex_from_file(input_file_name, atoms_to_ignore=[]):
     
     TODO: Check if chain have been already created and insert it into the first one
     """
-    lines = file(input_file_name).readlines()
-    atoms = []
-    residues = []
-    chains = []
-    num_models = 0
-    last_chain_id = '#'
-    last_residue_name = '#'
-    last_residue_number = '#'
-    current_chain = None
-    current_residue = None
-    for line in lines:
-        # Only first model is going to be read
-        if num_models <= 1:
-            line_type = line[0:6].strip()
-            if line_type == "MODEL":
-                num_models += 1
-                if num_models > 1:
-                    log.warning('Multiple models found in %s. Only first model will be used.' % input_file_name)
-            elif line_type == "ATOM" or line_type == "HETATM":
-                try:
-                    atom = read_atom_line(line, line_type, atoms_to_ignore)
-                    atoms.append(atom)
-                except PDBParsingWarning as warning:
-                    print(warning)
+    with open(input_file_name) as input_handle:
+        lines = input_handle.readlines()
+        atoms = []
+        residues = []
+        chains = []
+        num_models = 0
+        last_chain_id = '#'
+        last_residue_name = '#'
+        last_residue_number = '#'
+        current_chain = None
+        current_residue = None
+        for line in lines:
+            # Only first model is going to be read
+            if num_models <= 1:
+                line_type = line[0:6].strip()
+                if line_type == "MODEL":
+                    num_models += 1
+                    if num_models > 1:
+                        log.warning('Multiple models found in %s. Only first model will be used.' % input_file_name)
+                elif line_type == "ATOM" or line_type == "HETATM":
+                    try:
+                        atom = read_atom_line(line, line_type, atoms_to_ignore)
+                        atoms.append(atom)
+                    except PDBParsingWarning as warning:
+                        print(warning)
 
-                if last_chain_id != atom.chain_id:
-                    last_chain_id = atom.chain_id
-                    current_chain = Chain(last_chain_id)
-                    chains.append(current_chain)
-                if last_residue_name != atom.residue_name or last_residue_number != atom.residue_number:
-                    last_residue_name = atom.residue_name
-                    last_residue_number = atom.residue_number
-                    current_residue = Residue(atom.residue_name, atom.residue_number)
-                    residues.append(current_residue)
-                    current_chain.residues.append(current_residue)
-                current_residue.atoms.append(atom)
+                    if last_chain_id != atom.chain_id:
+                        last_chain_id = atom.chain_id
+                        current_chain = Chain(last_chain_id)
+                        chains.append(current_chain)
+                    if last_residue_name != atom.residue_name or last_residue_number != atom.residue_number:
+                        last_residue_name = atom.residue_name
+                        last_residue_number = atom.residue_number
+                        current_residue = Residue(atom.residue_name, atom.residue_number)
+                        residues.append(current_residue)
+                        current_chain.residues.append(current_residue)
+                    current_residue.atoms.append(atom)
 
-    # Set backbone and side-chain atoms
-    for residue in residues:
-        residue.set_backbone_and_sidechain()
+        # Set backbone and side-chain atoms
+        for residue in residues:
+            residue.set_backbone_and_sidechain()
 
-    return atoms, residues, chains
+        return atoms, residues, chains
 
 
 def _format_atom_name(atom_name):
@@ -151,22 +152,20 @@ def write_atom_line(atom, atom_coordinates, output):
 
 def write_pdb_to_file(molecule, output_file_name, atom_coordinates=None, structure_id=0):
     """Writes a Complex structure to a file in PDB format."""
-    output_file = file(output_file_name, "a")
-    for atom in molecule.atoms:
-        if atom_coordinates is not None:
-            write_atom_line(atom, atom_coordinates, output_file)
-        else:
-            write_atom_line(atom, molecule.atom_coordinates[structure_id], output_file)
-    output_file.close()
+    with open(output_file_name, "a") as output_file:
+        for atom in molecule.atoms:
+            if atom_coordinates is not None:
+                write_atom_line(atom, atom_coordinates, output_file)
+            else:
+                write_atom_line(atom, molecule.atom_coordinates[structure_id], output_file)
 
 
 def create_pdb_from_points(pdb_file_name, points, atom_type='H'):
     """Creates a PDB file which contains an atom_type atom for each point
     in points list.
     """
-    pdb_file = open(pdb_file_name, 'w')
-    for index, point in enumerate(points):
-        line = "ATOM  %5d %-4s XXX    1     %8.3f%8.3f%8.3f\n" % (index, atom_type,
-                                                                  point[0], point[1], point[2])
-        pdb_file.write(line)
-    pdb_file.close()
+    with open(pdb_file_name, 'w') as pdb_file:
+        for index, point in enumerate(points):
+            line = "ATOM  %5d %-4s XXX    1     %8.3f%8.3f%8.3f\n" % (index, atom_type,
+                                                                      point[0], point[1], point[2])
+            pdb_file.write(line)
