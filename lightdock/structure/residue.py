@@ -59,7 +59,7 @@ class Residue(object):
 
     def is_standard(self):
         """Checks if residue is standard"""
-        return self.name in Residue.STANDARD_TYPES.keys()
+        return self.name in list(Residue.STANDARD_TYPES.keys())
 
     def set_backbone_and_sidechain(self):
         """Classifies the atoms in backbone or side-chain"""
@@ -95,7 +95,7 @@ class Residue(object):
     def mutate_side_chain(self, rotamer):
         """Moves this residue's side chain using the rotamer angles"""
         for atom in self.sidechain:
-            print atom
+            print(atom)
 
     def __str__ (self):
         if len(self.atoms):

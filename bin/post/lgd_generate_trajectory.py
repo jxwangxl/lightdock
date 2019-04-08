@@ -28,12 +28,12 @@ def parse_command_line():
         usage()
     try:
         glowworm_id = int(sys.argv[1])
-    except Exception, e:
+    except Exception as e:
         log.error(str(e))
     
     try:
         num_steps = int(sys.argv[2])
-    except Exception, e:
+    except Exception as e:
         log.error(str(e))
         
     if os.path.isfile(sys.argv[3]):
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     except:
         nmodes_lig = None
 
-    for step in xrange(0, num_steps+1):
+    for step in range(0, num_steps+1):
         try:
             # Parse each stored step file
             file_name = 'gso_%d.out' % step

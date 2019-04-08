@@ -117,7 +117,7 @@ def calculate_scoring(optimization_vector):
     nm_ext_lig = optimization_vector[-DEFAULT_NMODES_LIG:]
     receptor_pose, ligand_pose = move_molecules(translation, q, nm_ext_rec, nm_ext_lig)
     energy = -1. * scoring_function(adapters.receptor_model, receptor_pose, adapters.ligand_model, ligand_pose)
-    print energy
+    print(energy)
     return energy
 
 
@@ -181,9 +181,9 @@ if __name__ == "__main__":
 
     # Minimize using Powell algorythm
     result = fmin_powell(calculate_scoring, optimization_vector, maxiter=2, full_output=1, xtol=0.05)
-    print 'Target: ', optimization_vector
-    print 'Minimized: ', result[0]
-    print 'Energy: ', result[1]
+    print('Target: ', optimization_vector)
+    print('Minimized: ', result[0])
+    print('Energy: ', result[1])
 
     with open('minimized_%d.out' % args.glowworm, 'w') as output:
         coordinates = ', '.join(['%8.5f' % x for x in result[0]])

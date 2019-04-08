@@ -96,8 +96,8 @@ def parse_complex_from_file(input_file_name, atoms_to_ignore=[]):
                 try:
                     atom = read_atom_line(line, line_type, atoms_to_ignore)
                     atoms.append(atom)
-                except PDBParsingWarning, warning:
-                    print warning
+                except PDBParsingWarning as warning:
+                    print(warning)
 
                 if last_chain_id != atom.chain_id:
                     last_chain_id = atom.chain_id

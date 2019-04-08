@@ -45,7 +45,7 @@ def calculate_inter_rmsd(swarm_id):
     pdb_parser = Bio.PDB.PDBParser(QUIET=True)
     super_imposer = Bio.PDB.Superimposer()
 
-    ca_atoms = [[] for _ in xrange(N)]
+    ca_atoms = [[] for _ in range(N)]
     for i in range(N):
         log.info('Reading structure %d' % i)
         structure_file = os.path.join(DEFAULT_SWARM_FOLDER + str(swarm_id),
@@ -134,7 +134,7 @@ if __name__ == "__main__":
                     solutions_clustered[id_cluster] = [solution]
 
             solutions_reclustered = {}
-            for k,v in zip(solutions_clustered.keys(), solutions_clustered.values()):
+            for k,v in zip(list(solutions_clustered.keys()), list(solutions_clustered.values())):
                 if len(v) >= args.population_threshold:
                     solutions_reclustered[k] = v
 
@@ -161,13 +161,13 @@ if __name__ == "__main__":
                     solutions_clustered[id_cluster] = [solution]
 
             solutions_reclustered = {}
-            for k,v in zip(solutions_clustered.keys(), solutions_clustered.values()):
+            for k,v in zip(list(solutions_clustered.keys()), list(solutions_clustered.values())):
                 if len(v) >= args.population_threshold:
                     solutions_reclustered[k] = v
 
             # Analysis
-            num_clusters = len(solutions_reclustered.keys())
-            population = [len(cluster) for cluster in solutions_reclustered.values()]
+            num_clusters = len(list(solutions_reclustered.keys()))
+            population = [len(cluster) for cluster in list(solutions_reclustered.values())]
             threshold = np.mean(population) - np.std(population)
             log.info("Cluster population threshold is %d" % args.population_threshold)
             for id_cluster in sorted(solutions_reclustered, key=lambda k: len(solutions_reclustered[k]), reverse=True):

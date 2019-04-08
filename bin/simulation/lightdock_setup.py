@@ -128,6 +128,6 @@ if __name__ == "__main__":
 
         log.info("LightDock setup OK")
 
-    except LightDockError, error:
+    except LightDockError as error:
         log.error("LightDock setup failed. Please see:")
         log.error(error)

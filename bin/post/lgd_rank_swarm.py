@@ -2,7 +2,7 @@
 
 """Calculates the ranking file by scoring intra-swarm"""
 
-from __future__ import print_function
+
 import sys
 import os
 import argparse

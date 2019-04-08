@@ -41,7 +41,7 @@ def get_ca_atoms(ids_list):
                         ca_atoms[struct_id].append(residue['CA'])
                     except:
                         ca_atoms[struct_id] = [residue['CA']]
-    except IOError, e:
+    except IOError as e:
         log.error('Error found reading a structure: %s' % str(e))
         log.error('Did you generate the LightDock structures corresponding to this output file?')
         raise SystemExit()
@@ -62,7 +62,7 @@ def clusterize(sorted_ids):
     for j in sorted_ids[1:]:
         log.info("Glowworm %d with pdb lightdock_%d.pdb" % (j, j))
         in_cluster = False
-        for cluster_id in clusters.keys():
+        for cluster_id in list(clusters.keys()):
             # For each cluster representative
             representative_id = clusters[cluster_id][0]
             super_imposer.set_atoms(ca_atoms[representative_id], ca_atoms[j])
@@ -84,7 +84,7 @@ def clusterize(sorted_ids):
 def write_cluster_info(clusters, gso_data):
     """Writes the clustering result"""
     with open(CLUSTER_REPRESENTATIVES_FILE, 'w') as output:
-        for id_cluster, ids in clusters.iteritems():
+        for id_cluster, ids in clusters.items():
             output.write("%d:%d:%8.5f:%d:%s\n" % (id_cluster, len(ids), gso_data[ids[0]].scoring,
                                                   ids[0], 'lightdock_%d.pdb' % ids[0]))
         log.info("Cluster result written to %s file" % CLUSTER_REPRESENTATIVES_FILE)        
@@ -111,6 +111,6 @@ if __name__ == '__main__':
         # Write clustering information
         write_cluster_info(clusters, gso_data)
 
-    except Exception, e:
+    except Exception as e:
         log.error('Clustering has failed. Please see error:')
         log.error(str(e))

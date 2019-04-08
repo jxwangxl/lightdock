@@ -23,12 +23,12 @@ if __name__ == "__main__":
         parser = CommandLineParser()
         mpi_support = parser.args.mpi
         if mpi_support:
-            from docking_mpi import run_simulation as mpi_simulation
+            from .docking_mpi import run_simulation as mpi_simulation
             mpi_simulation(parser)
         else:
-            from docking_multiprocessing import run_simulation as multiprocessing_simulation
+            from .docking_multiprocessing import run_simulation as multiprocessing_simulation
             multiprocessing_simulation(parser)
 
-    except Exception, e:
+    except Exception as e:
         log.error("Lightdock has failed, please check traceback:")
         traceback.print_exc()
