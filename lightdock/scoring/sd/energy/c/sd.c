@@ -1,4 +1,5 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#define PyInt_AsUnsignedLongMask PyLong_AsUnsignedLongMask
 #include <Python.h>
 #include "structmember.h"
 #include "numpy/arrayobject.h"
@@ -36,7 +37,7 @@ static PyObject * sd_calculate_energy(PyObject *self, PyObject *args) {
             &rec_vdw, &lig_vdw, &rec_vdw_radii, &lig_vdw_radii)) {
 
         descr = PyArray_DescrFromType(NPY_DOUBLE);
-
+        
         tmp0 = PyObject_GetAttrString(receptor_coordinates, "coordinates");
         tmp1 = PyObject_GetAttrString(ligand_coordinates, "coordinates");
 
@@ -105,6 +106,7 @@ static PyObject * sd_calculate_energy(PyObject *self, PyObject *args) {
         Py_DECREF(lig_c_vdw);
         Py_DECREF(rec_c_vdw_radii);
         Py_DECREF(lig_c_vdw_radii);
+
         Py_DECREF(descr);
         PyArray_Free(tmp0, rec_array);
         PyArray_Free(tmp1, lig_array);
@@ -130,8 +132,16 @@ static PyMethodDef module_methods[] = {
  * Initialization function
  *
  **/
-PyMODINIT_FUNC initsd(void) {
+static struct PyModuleDef sd =
+{
+    PyModuleDef_HEAD_INIT,
+    "sd",
+    "",
+    -1,
+    module_methods
+};
 
-    Py_InitModule3("sd", module_methods, "sd object");
+PyMODINIT_FUNC PyInit_sd(void) {
     import_array();
+    return PyModule_Create(&sd);
 }

@@ -1,4 +1,5 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#define PyInt_AsUnsignedLongMask PyLong_AsUnsignedLongMask
 #include <Python.h>
 #include "structmember.h"
 #include "numpy/arrayobject.h"
@@ -28,7 +29,9 @@ static PyObject * cpydock_calculate_energy(PyObject *self, PyObject *args) {
     PyArrayObject *rec_charges, *lig_charges, *rec_vdw, *lig_vdw, *rec_vdw_radii, *lig_vdw_radii = NULL;
     PyArrayObject *rec_hydrogens, *lig_hydrogens, *rec_asa, *lig_asa, *rec_des_energy, *lig_des_energy = NULL;
     double atom_elec, total_elec, total_vdw, total_solvation_rec, total_solvation_lig, vdw_energy, vdw_radius, p6, k, solv_rec, solv_lig;
-    unsigned int rec_len, lig_len, i, j, interface_len, intf_array_size, *interface_receptor, *interface_ligand;
+    unsigned int rec_len, lig_len, i, j, interface_len, intf_array_size;
+    unsigned int *interface_receptor = NULL;
+    unsigned int *interface_ligand = NULL;
     double **rec_array, **lig_array, x, y, z, distance2, interface_cutoff, interface_cutoff2;
     npy_intp dims[2];
     double *rec_c_charges, *lig_c_charges, *rec_c_vdw, *lig_c_vdw, *rec_c_vdw_radii, *lig_c_vdw_radii = NULL;
@@ -195,15 +198,21 @@ static PyMethodDef module_methods[] = {
     {NULL}
 };
 
-
 /**
  *
  * Initialization function
  *
  **/
-PyMODINIT_FUNC initcpydock(void) {
+static struct PyModuleDef cpydock =
+{
+    PyModuleDef_HEAD_INIT,
+    "cpydock",
+    "",
+    -1,
+    module_methods
+};
 
-    Py_InitModule3("cpydock", module_methods, "cpydock object");
+PyMODINIT_FUNC PyInit_cpydock(void) {
     import_array();
+    return PyModule_Create(&cpydock);
 }
-

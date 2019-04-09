@@ -45,7 +45,6 @@ void euclidean_dist(PyObject *receptor_coordinates, PyObject *ligand_coordinates
 
     *indexes_len = 0;
     n = 0;
-
     tmp0 = PyObject_GetAttrString(receptor_coordinates, "coordinates");
     tmp1 = PyObject_GetAttrString(ligand_coordinates, "coordinates");
 
@@ -89,9 +88,11 @@ void euclidean_dist(PyObject *receptor_coordinates, PyObject *ligand_coordinates
  **/
 static PyObject * cdfire_calculate_dfire(PyObject *self, PyObject *args) {
     PyObject *receptor, *ligand, *dfire_energy, *receptor_coordinates, *ligand_coordinates;
-    PyObject *take, *intf_rec_array_object, *intf_lig_array_object, *array_object, *tmp0, *tmp1, **rec_objects, **lig_objects, *result = NULL;
+    PyObject *take, *array_object, *tmp0, *tmp1, **rec_objects, **lig_objects, *result = NULL;
     PyArrayObject *df_en_array;
-    unsigned int n, m, i, j, d, dfire_bin, atoma, atomb, indexes_len, interface_len, *array, *interface_receptor, *interface_ligand, *indexes;
+    unsigned int n, m, i, j, d, dfire_bin, atoma, atomb, indexes_len, interface_len, *array, *indexes;
+    unsigned int *interface_receptor = NULL;
+    unsigned int *interface_ligand = NULL;
     double interface_cutoff, energy, *dfire_en_array;
     npy_intp dims[1];
 
@@ -189,12 +190,6 @@ static PyMethodDef module_methods[] = {
  * Initialization function
  *
  **/
-//PyMODINIT_FUNC initcdfire(void) {
-//
-//    Py_InitModule3("cdfire", module_methods, "cdfire object");
-//    import_array();
-//}
-
 static struct PyModuleDef cdfire =
 {
     PyModuleDef_HEAD_INIT,
@@ -205,6 +200,7 @@ static struct PyModuleDef cdfire =
 };
 
 PyMODINIT_FUNC PyInit_cdfire(void) {
+    import_array();
     return PyModule_Create(&cdfire);
 }
 

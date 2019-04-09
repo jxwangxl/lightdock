@@ -10,10 +10,10 @@ function cinfo() {
     echo -e "${COLOR}${MESSAGE}${RESET}"
 }
 
-cinfo "Compiling extensions..."
+cinfo "Compiling Cython and C extensions..."
 CURRENT_PATH=`pwd`
 
-for i in `find ../../ -name "compile.sh" | grep cython`;do
+for i in `find ../../ -name "compile.sh"`;do
 	dest=`dirname ${i}`;
 	cinfo $dest;
 	cd $dest;
